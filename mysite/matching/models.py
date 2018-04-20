@@ -24,3 +24,10 @@ class Pairing(models.Model):
         User, on_delete=models.CASCADE, related_name='user1')  # 用户1的openId
     user_two = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='user2')  # 用户2的openId
+
+
+class Word(models.Model):
+    word = models.CharField(max_length=100)
+    emotionty = models.IntegerField(
+        default=0, choices=[(x, str(x)) for x in range(1, 8)])
+    strength = models.IntegerField(default=0)
