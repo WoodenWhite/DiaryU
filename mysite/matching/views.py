@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.db import models
-from .models import User, Diary, Pairing, Word
 from django.db.models import Count, Min, Max, Sum
 from django.db import models
 from django.shortcuts import get_object_or_404, render
-import jieba
-from .utils import similityCos
+from django.utils.timezone import now, timedelta
+from .models import User, Diary, Pairing, Word
+from .utils import similityCos, pair
 from . import utils
+import jieba
 import jieba.analyse as analyse
 # Create your views here.
 
@@ -46,18 +47,26 @@ def emotion(request):
             max0 = emo
             emoret = emo_vec.index(emo)
 
-    # if User.objects.filter(openID=userid).count() != 0:  # 这个逻辑应该用try exception实现，以后改
-    #     obj = User.objects.get(openID=userid)
-    #     if obj.pair_status == True:
+    if User.objects.filter(openID=userid).count() != 0:  # 这个逻辑应该用try exception实现，以后改
+        obj = User.objects.get(openID=userid)
+        if obj.pair_status == True:  # 如果已经配对，直接返回配对对象。
+            userid_ret_obj = Pairing.objects.get(user_one=obj)
+            userid_ret = userid_ret_obj.openID
+            return HttpResponse('已配对，配对对象为：' + userid_ret)
 
-    articles = Diary.objects.all()
+    enddate = now()
+    startdate = enddate + timedelta(days=-2)  # 只取出近两天内发布的日记
+    articles = Diary.objects.filter(pub_date__range=(startdate, enddate))
+    # articles = Diary.objects.all()
+
     max_similarity = 0
     userid_ret = '000000'
     string0 = ''
-    if emoret == 0:  # 如果向量为空，没什么感情，那就在没什么感情的人里边随便选一个配
+    if emoret == 0:  # 如果向量为空，没什么感情，那就在没什么感情的人选最早发布日记的没感情的没匹配的人进行配对,避免他们一直匹不到
         for cursor in articles:
-            if cursor.emotion != 0 and cursor.user.openID != userid and cursor.user.pair_status != True:
+            if cursor.emotion == 0 and cursor.user.openID != userid and cursor.user.pair_status == False:
                 userid_ret = cursor.user.openID
+                break
     else:
         for cursor in articles:  # 否则对所有情感向量非零的人
             if cursor.emotion == 0 or cursor.user.openID == userid or cursor.user.pair_status == True:  # 暂时还不能实现有无人匹配
@@ -78,7 +87,7 @@ def emotion(request):
                 raise Http404("数据库错误")
             # string0 += str(similarity) + ','
             # print(similarity)
-            if similarity > max_similarity:
+            if similarity > max_similarity:  # 同等条件选取先发日记的人
                 max_similarity = similarity
                 userid_ret = cursor.user.openID
 
@@ -86,11 +95,12 @@ def emotion(request):
     if User.objects.filter(openID=userid).count() == 0:
         if userid_ret == '000000':
             obj = User(openID=userid, pair_status=False)
+            obj.save()
         else:
             obj = User(openID=userid, pair_status=True)
-        obj.save()
-        obj0 = User.objects.get(openID=userid_ret)
-        pair(obj, obj0)
+            obj.save()
+            obj0 = User.objects.get(openID=userid_ret)
+            pair(obj, obj0)
 
     elif userid_ret != '000000':  # 否则如果找到某个人了，将这两个人的配对状态变为True,并在pair表中插入他们的配对状态
         obj = User.objects.get(openID=userid)
