@@ -51,7 +51,7 @@ def emotion(request):
         obj = User.objects.get(openID=userid)
         if obj.pair_status == True:  # 如果已经配对，直接返回配对对象。
             userid_ret_obj = Pairing.objects.get(user_one=obj)
-            userid_ret = userid_ret_obj.openID
+            userid_ret = userid_ret_obj.user_two.openID
             return HttpResponse('已配对，配对对象为：' + userid_ret)
 
     enddate = now()
