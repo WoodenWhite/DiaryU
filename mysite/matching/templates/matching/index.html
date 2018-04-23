@@ -4,9 +4,12 @@
 </p>{% endif %}
 
 <form action="{% url 'emotion'%}" method="post">
-    {% csrf_token %} UserID :
+    {% csrf_token %}openID:
     <br>
     <input type="text" name="openid" />
+    <br>Title :
+    <br>
+    <input type="text" name="title" />
     <br>diary:
     <br>
     <textarea name="diary" rows="10" cols="50"></textarea>

@@ -21,7 +21,9 @@ def index(request):
 def emotion(request):
     userid = request.POST['openid']
     cont = request.POST['diary']  # 获取openid和日记文本
+    title = request.POST['title']
 
+    cont = title+cont
     words = Word.objects.all().values('word')
 
     for singleword in words:
@@ -47,7 +49,8 @@ def emotion(request):
             max0 = emo
             emoret = emo_vec.index(emo)
 
-    if User.objects.filter(openID=userid).count() != 0:  # 这个逻辑应该用try exception实现，以后改
+    # 这个逻辑应该用try exception实现，以后改, update:直接用get_or_create实现了
+    if User.objects.filter(openID=userid).count() != 0:
         obj = User.objects.get(openID=userid)
         if obj.pair_status == True:  # 如果已经配对，直接返回配对对象。
             userid_ret_obj = Pairing.objects.get(user_one=obj)
@@ -111,7 +114,7 @@ def emotion(request):
         obj.save()
         pair(obj, obj0)
 
-    diary = Diary(content=cont, emotion=emoret,
+    diary = Diary(content=cont, title=title, emotion=emoret,
                   user=User.objects.get(openID=userid),
                   strength0=emo_vec[0], strength1=emo_vec[1],
                   strength2=emo_vec[2], strength3=emo_vec[3],
@@ -119,10 +122,12 @@ def emotion(request):
                   strength6=emo_vec[6], strength7=emo_vec[7]
                   )  # 存储为对应的情感向量值。
     diary.save()
-    rett = userid + " : " + cont + '<br> 分词结果：' + \
-        ','.join(cut) + '<br> 情感类型：' + str(emoret) + \
-        '<br> 情感强度：' + str(emo_vec[emoret]) + \
-        '<br>匹配用户的openID: ' + userid_ret
+    # rett = userid + " : " + cont + '<br> 分词结果：' + \
+    #     ','.join(cut) + '<br> 情感类型：' + str(emoret) + \
+    #     '<br> 情感强度：' + str(emo_vec[emoret]) + \
+    #     '<br>匹配用户的openID: ' + userid_ret
+    # rett = '{"a": "Hello", "b": "World"}'
+    rett = '{"Emotiontype": "'+str(emoret)+'", "MatchingID": "'+userid_ret+'"}'
     return HttpResponse(rett)  # 返回的userid如果为000000则为无匹配人选
 
 
@@ -132,6 +137,10 @@ def depair(request):  # 解除关系
 
 def depair_action(request):  # 一方解除关系后，另一方需要接受提示？待实现
     userid = request.POST['userid']
-    x = User.objects.get(openID=userid)
-    utils.depair(x)
-    return HttpResponse("Successful depair!")
+    if User.objects.filter(openID=userid, pair_status=True).count() == 0:
+        ret = '{"result:", "Failed"}'
+    else:
+        x = User.objects.get(openID=userid)
+        utils.depair(x)
+        ret = '{"result:", "Successful"}'
+    return HttpResponse(ret)

@@ -6,13 +6,14 @@ from django.db import models
 class User(models.Model):
     openID = models.CharField(max_length=100)  # 微信用户openId
     sex = models.IntegerField(
-        default=0, choices=[(x, str(x)) for x in range(0, 1)], null=True)  # 用户性别
+        default=0, choices=[(x, str(x)) for x in range(0, 2)], null=True)  # 用户性别
     pair_status = models.BooleanField(default=False)  # 连接状态，判断当前用户是否有匹配对象
     session_key = models.CharField(
         max_length=100, null=True)  # 用户的session_key,用于对加密信息的解密
 
 
 class Diary(models.Model):
+    title = models.CharField(max_length=10000, null=True)  # 日记标题
     content = models.CharField(max_length=10000)  # 日记内容，限制字数为10000
     # 日记主要情感，用整数代替情感名
     emotion = models.IntegerField(

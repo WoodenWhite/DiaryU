@@ -18,5 +18,5 @@ Server's code of little program DiaryU.
 7. 惊
 
 ### 目前可用功能
-1. 访问``localhost:端口号/matching``，提供表单 ``<input type="text" name="openid" />`` 和``<textarea name="diary" rows="10" cols="50"></textarea>``，若用户已匹配，返回情感类型和匹配对象的openID，否则进行匹配，若匹配成功返回情感类型和新对象的openID，否则返回情感类型和’000000‘
-2. 访问``localhost:端口号/depair``, 提供表单``<input type="text" name="userid" />``,解除该用户的匹配关系。
+1. 访问``localhost:端口号/matching``，向``localhost:端口号/matching/emotion``提供表单 ``<input type="text" name="openid" />`` 和``<textarea name="diary" rows="10" cols="50"></textarea>``，若用户已匹配，返回情感类型和匹配对象的openID，否则进行匹配，若匹配成功返回情感类型和新对象的openID，否则返回情感类型和’000000‘
+2. 访问``localhost:端口号/matching/depair``, 向``localhost:端口号/matching/depair_action``提供表单``<input type="text" name="userid" />``,解除该用户的匹配关系。
