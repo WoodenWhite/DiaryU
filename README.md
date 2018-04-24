@@ -28,6 +28,7 @@ Server's code of little program DiaryU.
     - ``<input type="text" name="province" />`` 
     - ``<input type="text" name="city" /> ``
     - ``<input type="text" name="country" />``
+    
     返回json格式样例：{"result:", "Successful"}
 4. 获取用户信息：访问``localhost:端口号/matching/get_user``,向``localhost:端口号/matching/get_user_action``发送表单`` <input type="text" name="openId" />``,返回用户的详细信息和近期至多十篇文章的标题、情感、发布日期，返回json格式样例为：``{"nickName": "None", "avatarUrl": "None", "gender": 0, "province": "None", "city": "None", "country": "None", "diaries": [{"557": [null, 0, "2018-04-23"]}, {"582": ["真的烦", 6, "2018-04-24"]}]}``注：此处第一篇文章没有标题是测试数据，实际应用时所有文章均有标题。也就是传入标题或文章的至多前100个字。
 
