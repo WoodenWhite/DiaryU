@@ -3,13 +3,16 @@
     <strong>{{ error_message }}</strong>
 </p>{% endif %}
 
-<form action="{% url 'get_diary_action'%}" method="post">
+<form action="{% url 'alt_diary_action'%}" method="post">
     {% csrf_token %} diaryID :
     <br>
     <input type="text" name="diaryId" />
+    <br>title:
     <br>
-    <!-- <input type="text" name="" /> -->
-    <!-- <input type="text" name="userid" /> -->
+    <input type="text" name="title" />
+    <br>content:
+    <br>
+    <input type="text" name="content" />
     <!-- <input type="text" name="journal1" /> -->
     <!-- <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label> -->
     <input type="submit" value="提交" />

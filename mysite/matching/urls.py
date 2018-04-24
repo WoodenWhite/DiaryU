@@ -16,4 +16,6 @@ urlpatterns = [
     path('get_user_diary/', views.get_user_diary, name='get_user_diary'),
     path('get_user_diary_action/', views.get_user_diary_action,
          name='get_user_diary_action'),
+    path('alt_diary/', views.alt_diary, name='alt_diary'),
+    path('alt_diary_action/', views.alt_diary_action, name='alt_diary_action'),
 ]

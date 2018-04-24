@@ -35,3 +35,4 @@ Server's code of little program DiaryU.
 5. 获取日记信息：访问``localhost:端口号/matching/get_diary``, 向``localhost:端口号/matching/get_diary_action``发送表单``<input type="text" name="diaryID" />``,返回日记内容，返回json格式样例：``{"content": "我真的好烦呀，这一天天过得毫无生气，像一潭死水。"}``
 
 6. 获取某用户全部日记：访问``localhost:端口号/matching/get_user_diary``,向``localhost:端口号/matching/get_diary_action``，发送表单``<input type="text" name="openId" />``，返回对应用户的所有日记id、标题、心情、发布日期等信息。返回json样式举例：``[{"557": [null, 0, "2018-04-23"]}, {"582": ["真的烦", 6, "2018-04-24"]}]``
+7. 修改日记：访问``localhost:端口号/matching/alt_diary``,向``localhost:端口号/matching/alt_diary_action``发送表单，``<input type="text" name="diaryId" /> <input type="text" name="title" /> <input type="text" name="content" />``,存储修改后内容，并返回新的情感分析和匹配结果。返回json格式举例``{"Emotiontype": "1","MatchingID": "1233241","nickName": "None","avatarUrl": "None","gender": "0","province": "None","city": "None","country": "None"}``
