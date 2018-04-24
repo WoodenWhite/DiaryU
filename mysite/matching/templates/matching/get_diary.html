@@ -3,10 +3,10 @@
     <strong>{{ error_message }}</strong>
 </p>{% endif %}
 
-<form action="{% url 'depair_action'%}" method="post">
-    {% csrf_token %} UserID :
+<form action="{% url 'get_diary_action'%}" method="post">
+    {% csrf_token %} diaryID :
     <br>
-    <input type="text" name="openId" />
+    <input type="text" name="diaryID" />
     <br>
     <!-- <input type="text" name="" /> -->
     <!-- <input type="text" name="userid" /> -->

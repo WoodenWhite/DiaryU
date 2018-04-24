@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.db import models
 from django.db.models import Count, Min, Max, Sum
 from django.db import models
@@ -9,8 +9,10 @@ from .models import User, Diary, Pairing, Word
 from .utils import similityCos, pair
 from . import utils
 import jieba
+import json
 import jieba.analyse as analyse
 # Create your views here.
+# coding = unicode
 
 
 def index(request):
@@ -19,17 +21,23 @@ def index(request):
 
 
 def emotion(request):
-    userid = request.POST['openid']
+    userid = request.POST['openId']
     cont = request.POST['diary']  # 获取openid和日记文本
     title = request.POST['title']
 
-    cont = title+cont
+    if title == '' or title == None:
+        if len(cont) > 100:
+            title = cont[0:100]
+        else:
+            title = cont
+    # cont = title+cont
     words = Word.objects.all().values('word')
 
     for singleword in words:
         # 取出所有的候选词，并将他们在分词库中的比重加大，优先分词
         jieba.suggest_freq((singleword['word']), True)
-    cut = jieba.lcut(cont, cut_all=False)  # 分词，lcut直接返回list
+    # 分词，标题加内容，lcut直接返回list
+    cut = jieba.lcut(title + ' ' + cont, cut_all=False)
 
     emo_vec = [0, 0, 0, 0, 0, 0, 0, 0]  # 情感向量
 
@@ -49,13 +57,25 @@ def emotion(request):
             max0 = emo
             emoret = emo_vec.index(emo)
 
-    # 这个逻辑应该用try exception实现，以后改, update:直接用get_or_create实现了
-    if User.objects.filter(openID=userid).count() != 0:
-        obj = User.objects.get(openID=userid)
+    # 这个逻辑应该用try exception实现，以后改,
+    if User.objects.filter(openId=userid).count() != 0:
+        try:
+            obj = User.objects.get(openId=userid)
+        except User.DoesNotExist:
+            raise Http404("User does not exist")
         if obj.pair_status == True:  # 如果已经配对，直接返回配对对象。
             userid_ret_obj = Pairing.objects.get(user_one=obj)
-            userid_ret = userid_ret_obj.user_two.openID
-            return HttpResponse('情感类型：' + str(emoret) + '<br>已配对，配对对象为：' + userid_ret)
+            userid_ret = userid_ret_obj.user_two
+            userid_ret = userid_ret.openId
+            obj = User.objects.get(openId=userid_ret)
+        # rett = '{"Emotiontype": "' + \
+        #     str(emoret)+'",'+'"MatchingID": "'+userid_ret+'"}'
+            rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+str(obj.openId)+'",' + \
+                '"nickName": "'+str(obj.nickName)+'",' + '"avatarUrl": "'+str(obj.avatarUrl)+'",'+'"gender": "' + \
+                str(obj.gender)+'",' + '"province": "'+str(obj.province) + \
+                '",' + '"city": "'+str(obj.city)+'",' + \
+                '"country": "'+str(obj.country)+'"}'
+            return HttpResponse(rett)
 
     enddate = now()
     startdate = enddate + timedelta(days=-2)  # 只取出近两天内发布的日记
@@ -67,12 +87,12 @@ def emotion(request):
     string0 = ''
     if emoret == 0:  # 如果向量为空，没什么感情，那就在没什么感情的人选最早发布日记的没感情的没匹配的人进行配对,避免他们一直匹不到
         for cursor in articles:
-            if cursor.emotion == 0 and cursor.user.openID != userid and cursor.user.pair_status == False:
-                userid_ret = cursor.user.openID
+            if cursor.emotion == 0 and cursor.user.openId != userid and cursor.user.pair_status == False:
+                userid_ret = cursor.user.openId
                 break
     else:
         for cursor in articles:  # 否则对所有情感向量非零的人
-            if cursor.emotion == 0 or cursor.user.openID == userid or cursor.user.pair_status == True:  # 暂时还不能实现有无人匹配
+            if cursor.emotion == 0 or cursor.user.openId == userid or cursor.user.pair_status == True:  # 暂时还不能实现有无人匹配
                 continue
             # tmp = cursor.emotion
             tmp_emo_vec = [0, 0, 0, 0, 0, 0, 0, 0]
@@ -92,30 +112,37 @@ def emotion(request):
             # print(similarity)
             if similarity > max_similarity:  # 同等条件选取先发日记的人
                 max_similarity = similarity
-                userid_ret = cursor.user.openID
+                userid_ret = cursor.user.openId
 
-    # 如果数据库中没有这个人，存储，然后根据是否找到匹配对象进行操作
-    if User.objects.filter(openID=userid).count() == 0:
+    # 如果数据库中没有这个人，存储，然后根据是否找到匹配对象进行操作 update:其实按照系统逻辑这里已经一定能够找到匹配对象了
+    if User.objects.filter(openId=userid).count() == 0:
         if userid_ret == '000000':
-            obj = User(openID=userid, pair_status=False)
+            obj = User(openId=userid, pair_status=False)
             obj.save()
         else:
-            obj = User(openID=userid, pair_status=True)
+            obj = User(openId=userid, pair_status=True)
             obj.save()
-            obj0 = User.objects.get(openID=userid_ret)
+            obj0 = User.objects.get(openId=userid_ret)
             pair(obj, obj0)
 
     elif userid_ret != '000000':  # 否则如果找到某个人了，将这两个人的配对状态变为True,并在pair表中插入他们的配对状态
-        obj = User.objects.get(openID=userid)
+        try:
+            # 这里应该不需要exception了,但为了保险起见还是写一下
+            obj = User.objects.get(openId=userid)
+        except User.DoesNotExist:
+            raise Http404("User does not exist")
         obj.pair_status = True
-        obj.save()
-        obj = User.objects.get(openID=userid_ret)
-        obj.pair_status = True
+        try:
+            obj0 = User.objects.get(openId=userid_ret)
+        except User.DoesNotExist:
+            raise Http404("User does not exist")
+        obj0.pair_status = True
+        obj0.save()
         obj.save()
         pair(obj, obj0)
 
     diary = Diary(content=cont, title=title, emotion=emoret,
-                  user=User.objects.get(openID=userid),
+                  user=User.objects.get(openId=userid),
                   strength0=emo_vec[0], strength1=emo_vec[1],
                   strength2=emo_vec[2], strength3=emo_vec[3],
                   strength4=emo_vec[4], strength5=emo_vec[5],
@@ -127,7 +154,20 @@ def emotion(request):
     #     '<br> 情感强度：' + str(emo_vec[emoret]) + \
     #     '<br>匹配用户的openID: ' + userid_ret
     # rett = '{"a": "Hello", "b": "World"}'
-    rett = '{"Emotiontype": "'+str(emoret)+'", "MatchingID": "'+userid_ret+'"}'
+    if userid_ret != '000000':
+        obj = User.objects.get(openId=userid_ret)
+        # rett = '{"Emotiontype": "' + \
+        #     str(emoret)+'",'+'"MatchingID": "'+userid_ret+'"}'
+        rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+str(obj.openId)+'",' + \
+            '"nickName": "'+str(obj.nickName)+'",' + '"avatarUrl": "'+str(obj.avatarUrl)+'",'+'"gender": "' + \
+            str(obj.gender)+'",' + '"province": "'+str(obj.province) + \
+            '",' + '"city": "'+str(obj.city)+'",' + \
+            '"country": "'+str(obj.country)+'"}'
+    else:
+        rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+'000000'+'",' + \
+            '"nickName": "'+'000000'+'",' + '"avatarUrl": "'+'000000'+'",'+'"gender": "' + \
+            '000000'+'",' + '"province": "'+'000000' + \
+            '",' + '"city": "'+'000000'+'",' + '"country": "'+'000000'+'"}'
     return HttpResponse(rett)  # 返回的userid如果为000000则为无匹配人选
 
 
@@ -136,11 +176,104 @@ def depair(request):  # 解除关系
 
 
 def depair_action(request):  # 一方解除关系后，另一方需要接受提示？待实现
-    userid = request.POST['userid']
-    if User.objects.filter(openID=userid, pair_status=True).count() == 0:
+    userid = request.POST['openId']
+
+    if User.objects.filter(openId=userid, pair_status=True).count() == 0:
         ret = '{"result:", "Failed"}'
     else:
-        x = User.objects.get(openID=userid)
+        x = User.objects.get(openId=userid)
         utils.depair(x)
         ret = '{"result:", "Successful"}'
     return HttpResponse(ret)
+
+
+def store(request):
+    return render(request, 'matching/store.html')
+
+
+def store_action(request):
+    openId = request.POST['openId']
+    nickName = request.POST['nickName']
+    avatarUrl = request.POST['avatarUrl']
+    gender = request.POST['gender']
+    province = request.POST['province']
+    city = request.POST['city']
+    country = request.POST['country']
+    if User.objects.filter(openId=openId).count() == 0:
+        obj = User(
+            openId=openId, nickName=nickName, avatarUrl=avatarUrl, gender=gender, province=province, city=city, country=country)
+        obj.save()  # 应该要try exception
+    ret = '{"result:", "Successful"}'
+    return HttpResponse(ret)
+    # def get_user(request):
+    #     return render(request, 'matching/get_user.html')
+
+
+def get_user(request):  # 获取用户信息
+    return render(request, 'matching/get_user.html')
+
+
+def get_user_action(request):
+    openId = request.POST['openId']
+    try:
+        obj = User.objects.get(openId=openId)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    diaries = Diary.objects.filter(user=obj)
+    cnt = 0
+    # rett = '{"nickName": "'+str(obj.nickName)+'", ' + '"avatarUrl": "'+str(obj.avatarUrl)+'", '+'"gender": "' + \
+    #     str(obj.gender)+'", ' + '"province": "'+str(obj.province) + \
+    #     '", ' + '"city": "'+str(obj.city)+'", ' + \
+    #     '"country": "'+str(obj.country)+'", "diaries": ['
+    rett = {
+        'nickName': str(obj.nickName),
+        'avatarUrl': str(obj.avatarUrl),
+        'gender': obj.gender,
+        'province': str(obj.province),
+        'city': str(obj.city),
+        'country': str(obj.country),
+        'diaries': [],
+    }
+
+    cnt = 0
+    for diary in diaries:
+        if cnt < 10:
+            cnt += 1
+            rett['diaries'].append({diary.id: [diary.title,
+                                               diary.emotion, str(diary.pub_date)[0:10]]})
+        else:
+            break
+    return HttpResponse(json.dumps(rett, ensure_ascii=False))
+
+
+def get_diary(request):  # 获取日记内容
+    return render(request, 'matching/get_diary.html')
+
+
+def get_diary_action(request):
+    diaryid = request.POST['diaryID']
+    try:
+        obj = Diary.objects.get(id=diaryid)
+    except Diary.DoesNotExist:
+        raise Http404("Diary does not exist")
+    ret = {
+        'content': obj.content, }
+    return HttpResponse(json.dumps(ret, ensure_ascii=False))
+
+
+def get_user_diary(request):  # 找到用户的日记
+    return render(request, 'matching/get_user_diary.html')
+
+
+def get_user_diary_action(request):
+    userid = request.POST['openId']
+    try:
+        obj = User.objects.get(openId=userid)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    diaries = Diary.objects.filter(user=obj)
+    rett = []
+    for diary in diaries:
+        rett.append({diary.id: [diary.title,
+                                diary.emotion, str(diary.pub_date)[0:10]]})
+    return HttpResponse(json.dumps(rett, ensure_ascii=False))
