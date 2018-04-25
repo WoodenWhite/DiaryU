@@ -25,7 +25,7 @@ SECRET_KEY = '482j#f+gy15*7bn-crckg!s7x$u)*1m@t0!qcco#30eja%jawv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['2life.zerychao.com']
+ALLOWED_HOSTS = ['2life.zerychao.com', '127.0.0.1', ]
 
 
 # Application definition

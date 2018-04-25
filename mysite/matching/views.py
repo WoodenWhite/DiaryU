@@ -8,6 +8,7 @@ from django.utils.timezone import now, timedelta
 from .models import User, Diary, Pairing, Word
 from .utils import similityCos, pair
 from . import utils
+import requests
 import jieba
 import json
 import jieba.analyse as analyse
@@ -70,14 +71,14 @@ def emotion(request):
             obj = User.objects.get(openId=userid_ret)
         # rett = '{"Emotiontype": "' + \
         #     str(emoret)+'",'+'"MatchingID": "'+userid_ret+'"}'
-                # 存储日记
+            # 存储日记
             diary = Diary(content=cont, title=title, emotion=emoret,
-                        user=User.objects.get(openId=userid),
-                        strength0=emo_vec[0], strength1=emo_vec[1],
-                        strength2=emo_vec[2], strength3=emo_vec[3],
-                        strength4=emo_vec[4], strength5=emo_vec[5],
-                        strength6=emo_vec[6], strength7=emo_vec[7]
-                        )  # 存储为对应的情感向量值。
+                          user=User.objects.get(openId=userid),
+                          strength0=emo_vec[0], strength1=emo_vec[1],
+                          strength2=emo_vec[2], strength3=emo_vec[3],
+                          strength4=emo_vec[4], strength5=emo_vec[5],
+                          strength6=emo_vec[6], strength7=emo_vec[7]
+                          )  # 存储为对应的情感向量值。
             diary.save()
             rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+str(obj.openId)+'",' + \
                 '"nickName": "'+str(obj.nickName)+'",' + '"avatarUrl": "'+str(obj.avatarUrl)+'",'+'"gender": "' + \
@@ -208,6 +209,7 @@ def store_action(request):
     province = request.POST['province']
     city = request.POST['city']
     country = request.POST['country']
+
     if User.objects.filter(openId=openId).count() == 0:
         obj = User(
             openId=openId, nickName=nickName, avatarUrl=avatarUrl, gender=gender, province=province, city=city, country=country)
@@ -216,6 +218,23 @@ def store_action(request):
     return HttpResponse(ret)
     # def get_user(request):
     #     return render(request, 'matching/get_user.html')
+
+
+def get_openId(request):
+    return render(request, 'matching/get_openId.html')
+
+
+def get_openId_action(request):
+    # appid = request.POST['appid']
+    # secret = request.POST['secret']
+    appid = ''
+    secret = ''
+    js_code = request.POST['js_code']
+    # grant_type = request.POST['grant_type']
+    r = requests.get(
+        'https://api.weixin.qq.com/sns/jscode2session?appid='+appid+'&secret='+secret+'&js_code='+js_code+'&grant_type=authorization_code')
+    # result = json.loads(r)
+    return HttpResponse(r)
 
 
 def get_user(request):  # 获取用户信息
