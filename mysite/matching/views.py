@@ -266,12 +266,12 @@ def store_action(request):
 #     return render(request, 'matching/get_openId.html')
 
 
-def get_openId_action(request, js_code):
+def get_openId_action(request):
     # appid = request.POST['appid']
     # secret = request.POST['secret']
     appid = secret_data.appid
     secret = secret_data.secret
-    # js_code = request.POST['js_code']
+    js_code = request.GET['js_code']
     # grant_type = request.POST['grant_type']
     r = requests.get(
         'https://api.weixin.qq.com/sns/jscode2session?appid='+appid+'&secret='+secret+'&js_code='+js_code+'&grant_type=authorization_code')

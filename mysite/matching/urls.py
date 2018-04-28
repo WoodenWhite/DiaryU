@@ -21,6 +21,6 @@ urlpatterns = [
     path('alt_diary/', views.alt_diary, name='alt_diary'),
     path('alt_diary_action/', views.alt_diary_action, name='alt_diary_action'),
     # path('get_openId/', views.get_openId, name='get_openId'),
-    path('get_openId_action/<js_code>',
+    path('get_openId_action/',
          views.get_openId_action, name='get_openId_action')
 ]
