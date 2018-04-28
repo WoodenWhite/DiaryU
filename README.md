@@ -2,7 +2,13 @@
 Server's code of little program DiaryU.
 
 ### 使用步骤：
-1. 需要安装django：``pip3 install django``
+1. 需要安装的 Python 库：
+    ```
+    pip3 install django &&
+    pip3 install jieba &&
+    pip3 install requests &&
+    pip3 install django-cors-headers
+    ```
 1. ``git clone https://github.com/WoodenWhite/DiaryU.git``
 2. 进入mysite文件夹，``python3 manage.py runserver + 端口号``
 3. 访问``localhost:端口号/matching``进行配对
