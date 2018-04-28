@@ -17,7 +17,7 @@ Backend code of WeChat Mini Program DiaryU.
 2. 开启测试服务器
     ```
     cd mysite &&
-    python3 manage.py runserver + 端口号``
+    python3 manage.py runserver + 端口号
     ```
 3. 在浏览器中访问``localhost:端口号/matching``进行测试
 
@@ -41,6 +41,7 @@ Backend code of WeChat Mini Program DiaryU.
 访问``localhost:端口号/matching``，向``localhost:端口号/matching/emotion``提供表单
 ```
 <input type="text" name="openid" />
+<input type="text" name="title" />
 <textarea name="diary" rows="10" cols="50"></textarea>
 ```
 若用户已匹配，返回情感类型和匹配对象的openID，否则进行匹配，若匹配成功返回情感类型和新对象的相关信息，否则只返回情感类型。返回json格式样例：
@@ -113,10 +114,12 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``GET``
 
-访问``localhost:端口号/matching/get_user``,向``localhost:端口号/matching/get_user_action``发送表单
-```
+调用API:``localhost:端口号/matching/get_user_action/用户openId``
+<!-- 
+访问``localhost:端口号/matching/get_user``,向``localhost:端口号/matching/get_user_action``发送表单 -->
+<!-- ```
 <input type="text" name="openId" />
-```
+``` -->
 返回用户的详细信息和近期至多十篇文章的简略信息，返回json格式样例为：
 ```
 {
@@ -130,20 +133,22 @@ Backend code of WeChat Mini Program DiaryU.
             "city": "None", 
             "country": "None"
         },
-        "diaries": {
+        "diaries": [
             {
                 "diary_id": "557",
-                "content": "Lorem ipsum dolor sit amet."
+                "title": "Lorem ipsum dolor sit amet."
+                "content": "Lorem ipsum dolor sit amet.",
                 "emotion": "0", 
                 "publish_date": "2018-04-23"
             },
             {
                 "diary_id": "582",
                 "title": "真的烦", 
+                "content": "哇今天是真的烦",
                 "emotion": "6", 
                 "publish_date": "2018-04-24"
             }
-        }
+        ]
     }
 }
 ```
@@ -153,18 +158,20 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``GET``
 
-访问``localhost:端口号/matching/get_diary``，向``localhost:端口号/matching/get_diary_action``发送表单
-```
+调用API:``localhost:端口号/matching/get_diary_action/日记Id``
+<!-- 
+访问``localhost:端口号/matching/get_diary``，向``localhost:端口号/matching/get_diary_action``发送表单 -->
+<!-- ```
 <input type="text" name="diaryID" />
-```
-返回详细日记内容。返回json格式样例：
+``` -->
+返回详细日记内容。返回json格式样例：
 ```
 {
     "data": {
         "diary": {
             "diary_id": "666",
             "title": "烦！",
-            "content": "我真的好烦呀，这一天天过得毫无生气，像一潭死水。"
+            "content": "我真的好烦呀，这一天天过得毫无生气，像一潭死水。",
             "emotion": "6",
             "publish_date": "2018-04-24"
         }
@@ -176,15 +183,16 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``GET``
 
-访问``localhost:端口号/matching/get_user_diary``,向``localhost:端口号/matching/get_diary_action``，发送表单
-```
+调用API:``localhost:端口号/matching/get_user_diary_action/用户openId``
+<!-- 访问``localhost:端口号/matching/get_user_diary``,向``localhost:端口号/matching/get_diary_action``，发送表单 -->
+<!-- ```
 <input type="text" name="openId" />
-```
+``` -->
 返回对应用户的所有日记简略信息。返回json样式举例：
 ```
 {
     "data": {
-        "diaries": {
+        "diaries": [
             {
                 "diary_id": "557",
                 "content": "Lorem ipsum dolor sit amet."
@@ -197,7 +205,7 @@ Backend code of WeChat Mini Program DiaryU.
                 "emotion": "6", 
                 "publish_date": "2018-04-24"
             }
-        }
+        ]
     }
 }
 ```
@@ -238,10 +246,11 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``GET``
 
-访问``localhost:端口号/matching/get_openId``,向``localhost:端口号/matching/get_openId_action``发送表单
-```
+调用API``localhost:端口号/matching/get_openId_action/用户js_code``
+<!-- 访问``localhost:端口号/matching/get_openId``,向``localhost:端口号/matching/get_openId_action``发送表单 -->
+<!-- ```
 <input type="text" name="js_code" /> 
-```
+``` -->
 获取该用户的openID和session_key。返回json格式举例
 ```
 // 从微信 API 处获取成功

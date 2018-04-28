@@ -16,7 +16,6 @@ import jieba.analyse as analyse
 # coding = unicode
 
 
-
 def index(request):
     return render(request, 'matching/index.html')
     # return HttpResponse("Test")
@@ -81,12 +80,27 @@ def emotion(request):
                           strength6=emo_vec[6], strength7=emo_vec[7]
                           )  # 存储为对应的情感向量值。
             diary.save()
-            rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+str(obj.openId)+'",' + \
-                '"nickName": "'+str(obj.nickName)+'",' + '"avatarUrl": "'+str(obj.avatarUrl)+'",'+'"gender": "' + \
-                str(obj.gender)+'",' + '"province": "'+str(obj.province) + \
-                '",' + '"city": "'+str(obj.city)+'",' + \
-                '"country": "'+str(obj.country)+'"}'
-            return HttpResponse(rett)
+            retdic = {
+                'status': 'success',
+                'data': {
+                    'emotion': str(emoret),
+                    'match': {
+                        'openid': str(obj.openId),
+                        'nickName': str(obj.nickName),
+                        'avatarUrl': str(obj.avatarUrl),
+                        'gender': str(obj.gender),
+                        'province': str(obj.province),
+                        'city': str(obj.city),
+                        'country': str(obj.country),
+                    }
+                }
+            }
+            # rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+str(obj.openId)+'",' + \
+            # '"nickName": "'+str(obj.nickName)+'",' + '"avatarUrl": "'+str(obj.avatarUrl)+'",'+'"gender": "' + \
+            # str(obj.gender)+'",' + '"province": "'+str(obj.province) + \
+            # '",' + '"city": "'+str(obj.city)+'",' + \
+            # '"country": "'+str(obj.country)+'"}'
+            return HttpResponse(json.dumps(retdic), ensure_ascii=False)
 
     enddate = now()
     startdate = enddate + timedelta(days=-2)  # 只取出近两天内发布的日记
@@ -167,19 +181,42 @@ def emotion(request):
     # rett = '{"a": "Hello", "b": "World"}'
     if userid_ret != '000000':
         obj = User.objects.get(openId=userid_ret)
+        retdic = {
+            'status': 'success',
+            'data': {
+                'emotion': str(emoret),
+                'match': {
+                    'openid': str(obj.openId),
+                    'nickName': str(obj.nickName),
+                    'avatarUrl': str(obj.avatarUrl),
+                    'gender': str(obj.gender),
+                    'province': str(obj.province),
+                    'city': str(obj.city),
+                    'country': str(obj.country),
+                }
+            }
+        }
         # rett = '{"Emotiontype": "' + \
         #     str(emoret)+'",'+'"MatchingID": "'+userid_ret+'"}'
-        rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+str(obj.openId)+'",' + \
-            '"nickName": "'+str(obj.nickName)+'",' + '"avatarUrl": "'+str(obj.avatarUrl)+'",'+'"gender": "' + \
-            str(obj.gender)+'",' + '"province": "'+str(obj.province) + \
-            '",' + '"city": "'+str(obj.city)+'",' + \
-            '"country": "'+str(obj.country)+'"}'
+        # rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+str(obj.openId)+'",' + \
+        #     '"nickName": "'+str(obj.nickName)+'",' + '"avatarUrl": "'+str(obj.avatarUrl)+'",'+'"gender": "' + \
+        #     str(obj.gender)+'",' + '"province": "'+str(obj.province) + \
+        #     '",' + '"city": "'+str(obj.city)+'",' + \
+        #     '"country": "'+str(obj.country)+'"}'
     else:
-        rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+'000000'+'",' + \
-            '"nickName": "'+'000000'+'",' + '"avatarUrl": "'+'000000'+'",'+'"gender": "' + \
-            '000000'+'",' + '"province": "'+'000000' + \
-            '",' + '"city": "'+'000000'+'",' + '"country": "'+'000000'+'"}'
-    return HttpResponse(rett)  # 返回的userid如果为000000则为无匹配人选
+        retdic = {
+            'status': 'success',
+            'data': {
+                'emotion': str(emoret),
+            }
+        }
+        # rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+'000000'+'",' + \
+        #     '"nickName": "'+'000000'+'",' + '"avatarUrl": "'+'000000'+'",'+'"gender": "' + \
+        #     '000000'+'",' + '"province": "'+'000000' + \
+        #     '",' + '"city": "'+'000000'+'",' + '"country": "'+'000000'+'"}'
+    # 返回的userid如果为000000则为无匹配人选
+    # 返回的userid如果为000000则为无匹配人选
+    return HttpResponse(json.dumps(retdic, ensure_ascii=False))
 
 
 def depair(request):  # 解除关系
@@ -190,12 +227,16 @@ def depair_action(request):  # 一方解除关系后，另一方需要接受提�
     userid = request.POST['openId']
 
     if User.objects.filter(openId=userid, pair_status=True).count() == 0:
-        ret = '{"result:", "Failed"}'
+        ret = {
+            'status': 'failure'
+        }
     else:
         x = User.objects.get(openId=userid)
         utils.depair(x)
-        ret = '{"result:", "Successful"}'
-    return HttpResponse(ret)
+        ret = {
+            'status': 'success'
+        }
+    return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
 def store(request):
@@ -215,22 +256,22 @@ def store_action(request):
         obj = User(
             openId=openId, nickName=nickName, avatarUrl=avatarUrl, gender=gender, province=province, city=city, country=country)
         obj.save()  # 应该要try exception
-    ret = '{"result:", "Successful"}'
+    ret = '{"status:", "success"}'
     return HttpResponse(ret)
     # def get_user(request):
     #     return render(request, 'matching/get_user.html')
 
 
-def get_openId(request):
-    return render(request, 'matching/get_openId.html')
+# def get_openId(request):
+#     return render(request, 'matching/get_openId.html')
 
 
-def get_openId_action(request):
+def get_openId_action(request, js_code):
     # appid = request.POST['appid']
     # secret = request.POST['secret']
     appid = secret_data.appid
     secret = secret_data.secret
-    js_code = request.POST['js_code']
+    # js_code = request.POST['js_code']
     # grant_type = request.POST['grant_type']
     r = requests.get(
         'https://api.weixin.qq.com/sns/jscode2session?appid='+appid+'&secret='+secret+'&js_code='+js_code+'&grant_type=authorization_code')
@@ -238,12 +279,11 @@ def get_openId_action(request):
     return HttpResponse(r)
 
 
-def get_user(request):  # 获取用户信息
-    return render(request, 'matching/get_user.html')
+# def get_user(request):  # 获取用户信息
+#     return render(request, 'matching/get_user.html')
 
 
-def get_user_action(request):
-    openId = request.POST['openId']
+def get_user_action(request, openId):
     try:
         obj = User.objects.get(openId=openId)
     except User.DoesNotExist:
@@ -255,56 +295,70 @@ def get_user_action(request):
     #     '", ' + '"city": "'+str(obj.city)+'", ' + \
     #     '"country": "'+str(obj.country)+'", "diaries": ['
     rett = {
-        'nickName': str(obj.nickName),
-        'avatarUrl': str(obj.avatarUrl),
-        'gender': obj.gender,
-        'province': str(obj.province),
-        'city': str(obj.city),
-        'country': str(obj.country),
-        'diaries': [],
+        'data': {
+            'user': {
+                'nickName': str(obj.nickName),
+                'avatarUrl': str(obj.avatarUrl),
+                'gender': obj.gender,
+                'province': str(obj.province),
+                'city': str(obj.city),
+                'country': str(obj.country),
+            },
+            'diaries': []
+        }
+
     }
 
     cnt = 0
     for diary in diaries:
         if cnt < 10:
             cnt += 1
-            rett['diaries'].append({diary.id: [diary.title,
-                                               diary.emotion, str(diary.pub_date)[0:10]]})
+            rett['data']['diaries'].append({'diary_id': str(diary.id), 'title': str(
+                diary.title), 'emotion': str(diary.emotion), 'publish_date': str(diary.pub_date)[0:10]})
         else:
             break
     return HttpResponse(json.dumps(rett, ensure_ascii=False))
 
 
-def get_diary(request):  # 获取日记内容
-    return render(request, 'matching/get_diary.html')
+# def get_diary(request):  # 获取日记内容
+#     return render(request, 'matching/get_diary.html')
 
 
-def get_diary_action(request):
-    diaryid = request.POST['diaryId']
+def get_diary_action(request, diaryid):
+    # diaryid = request.POST['diaryId']
     try:
         obj = Diary.objects.get(id=diaryid)
     except Diary.DoesNotExist:
         raise Http404("Diary does not exist")
     ret = {
-        'content': obj.content, }
+        'diary_id': str(obj.id),
+        'title': str(obj.title),
+        'content': str(obj.content),
+        'emotion': str(obj.emotion),
+        'publish_date': str(obj.pub_date)[0:10],
+    }
     return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
-def get_user_diary(request):  # 找到用户的日记
-    return render(request, 'matching/get_user_diary.html')
+# def get_user_diary(request):  # 找到用户的日记
+#     return render(request, 'matching/get_user_diary.html')
 
 
-def get_user_diary_action(request):
-    userid = request.POST['openId']
+def get_user_diary_action(request, userid):
+    # userid = request.POST['openId']
     try:
         obj = User.objects.get(openId=userid)
     except User.DoesNotExist:
         raise Http404("User does not exist")
     diaries = Diary.objects.filter(user=obj)
-    rett = []
+    rett = {
+        'data': {
+            'diaries': []
+        }
+    }
     for diary in diaries:
-        rett.append({diary.id: [diary.title,
-                                diary.emotion, str(diary.pub_date)[0:10]]})
+        rett['data']['diaries'].append({'diary_id': str(diary.id), 'title': str(
+            diary.title), 'emotion': str(diary.emotion), 'publish_date': str(diary.pub_date)[0:10]})
     return HttpResponse(json.dumps(rett, ensure_ascii=False))
 
 
@@ -380,14 +434,38 @@ def alt_diary_action(request):
             userid_ret = userid_ret_obj.user_two
             userid_ret = userid_ret.openId
             obj = User.objects.get(openId=userid_ret)
+            diary = Diary(content=cont, title=title, emotion=emoret,
+                          user=User.objects.get(openId=userid),
+                          strength0=emo_vec[0], strength1=emo_vec[1],
+                          strength2=emo_vec[2], strength3=emo_vec[3],
+                          strength4=emo_vec[4], strength5=emo_vec[5],
+                          strength6=emo_vec[6], strength7=emo_vec[7]
+                          )  # 存储为对应的情感向量值。
+            diary.save()
+            retdic = {
+                'status': 'success',
+                'data': {
+                    'emotion': str(emoret),
+                    'match': {
+                        'openid': str(obj.openId),
+                        'nickName': str(obj.nickName),
+                        'avatarUrl': str(obj.avatarUrl),
+                        'gender': str(obj.gender),
+                        'province': str(obj.province),
+                        'city': str(obj.city),
+                        'country': str(obj.country),
+                    }
+                }
+            }
+            return HttpResponse(json.dumps(retdic), ensure_ascii=False)
         # rett = '{"Emotiontype": "' + \
         #     str(emoret)+'",'+'"MatchingID": "'+userid_ret+'"}'
-            rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+str(obj.openId)+'",' + \
-                '"nickName": "'+str(obj.nickName)+'",' + '"avatarUrl": "'+str(obj.avatarUrl)+'",'+'"gender": "' + \
-                str(obj.gender)+'",' + '"province": "'+str(obj.province) + \
-                '",' + '"city": "'+str(obj.city)+'",' + \
-                '"country": "'+str(obj.country)+'"}'
-            return HttpResponse(rett)
+            # rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+str(obj.openId)+'",' + \
+            #     '"nickName": "'+str(obj.nickName)+'",' + '"avatarUrl": "'+str(obj.avatarUrl)+'",'+'"gender": "' + \
+            #     str(obj.gender)+'",' + '"province": "'+str(obj.province) + \
+            #     '",' + '"city": "'+str(obj.city)+'",' + \
+            #     '"country": "'+str(obj.country)+'"}'
+            # return HttpResponse(rett)
 
     enddate = now()
     startdate = enddate + timedelta(days=-2)  # 只取出近两天内发布的日记
@@ -457,14 +535,31 @@ def alt_diary_action(request):
         obj = User.objects.get(openId=userid_ret)
         # rett = '{"Emotiontype": "' + \
         #     str(emoret)+'",'+'"MatchingID": "'+userid_ret+'"}'
-        rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+str(obj.openId)+'",' + \
-            '"nickName": "'+str(obj.nickName)+'",' + '"avatarUrl": "'+str(obj.avatarUrl)+'",'+'"gender": "' + \
-            str(obj.gender)+'",' + '"province": "'+str(obj.province) + \
-            '",' + '"city": "'+str(obj.city)+'",' + \
-            '"country": "'+str(obj.country)+'"}'
+        retdic = {
+            'status': 'success',
+            'data': {
+                'emotion': str(emoret),
+                'match': {
+                    'openid': str(obj.openId),
+                    'nickName': str(obj.nickName),
+                    'avatarUrl': str(obj.avatarUrl),
+                    'gender': str(obj.gender),
+                    'province': str(obj.province),
+                    'city': str(obj.city),
+                    'country': str(obj.country),
+                }
+            }
+        }
     else:
-        rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+'000000'+'",' + \
-            '"nickName": "'+'000000'+'",' + '"avatarUrl": "'+'000000'+'",'+'"gender": "' + \
-            '000000'+'",' + '"province": "'+'000000' + \
-            '",' + '"city": "'+'000000'+'",' + '"country": "'+'000000'+'"}'
-    return HttpResponse(rett)  # 返回的userid如果为000000则为无匹配人选
+        retdic = {
+            'status': 'success',
+            'data': {
+                'emotion': str(emoret),
+            }
+        }
+        # rett = '{"Emotiontype": "'+str(emoret)+'",' + '"MatchingID": "'+'000000'+'",' + \
+        #     '"nickName": "'+'000000'+'",' + '"avatarUrl": "'+'000000'+'",'+'"gender": "' + \
+        #     '000000'+'",' + '"province": "'+'000000' + \
+        #     '",' + '"city": "'+'000000'+'",' + '"country": "'+'000000'+'"}'
+    # 返回的userid如果为000000则为无匹配人选
+    return HttpResponse(json.dumps(retdic, ensure_ascii=False))
