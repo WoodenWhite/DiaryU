@@ -23,14 +23,16 @@ Backend code of WeChat Mini Program DiaryU.
 
 ## 情感类型备注：
 
-0. 毫无感情
-1. 乐
-2. 好
-3. 怒
-4. 哀
-5. 惧
-6. 恶
-7. 惊
+| 代码 | 中文名 | 英文名 | 色彩 | 备注 |
+| :-: | :-: | :-: | :-: | :-: |
+| 0 | 静 | Peaceful | 紫黑 | 无情感 |
+| 1 | 乐 | Happy | 绿 | 积极 |
+| 2 | 好 | Satisfied | 绿 | 积极 |
+| 3 | 怒 | Angry | 红 | 强烈 |
+| 4 | 哀 | Sad | 蓝 | 消极 |
+| 5 | 惧 | Worried | 蓝 | 消极 |
+| 6 | 恶 | Disgusted | 红 | 强烈 |
+| 7 | 惊 | Surprised | 红 | 强烈 |
 
 ## 目前可用功能
 
