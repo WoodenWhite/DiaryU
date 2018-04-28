@@ -3,7 +3,7 @@
     <strong>{{ error_message }}</strong>
 </p>{% endif %}
 
-<form action="{% url 'get_openId_action'%}" method="post">
+<form action="{% url 'get_openId_action'%}" method="GET">
     {% csrf_token %}
     <br> js_code:
     <br>

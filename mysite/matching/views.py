@@ -224,7 +224,7 @@ def depair(request):  # 解除关系
 
 
 def depair_action(request):  # 一方解除关系后，另一方需要接受提示？待实现
-    userid = request.POST['openId']
+    userid = request.GET['openId']
 
     if User.objects.filter(openId=userid, pair_status=True).count() == 0:
         ret = {
@@ -256,14 +256,14 @@ def store_action(request):
         obj = User(
             openId=openId, nickName=nickName, avatarUrl=avatarUrl, gender=gender, province=province, city=city, country=country)
         obj.save()  # 应该要try exception
-    ret = '{"status:", "success"}'
+    ret = '{"status": "success"}'
     return HttpResponse(ret)
     # def get_user(request):
     #     return render(request, 'matching/get_user.html')
 
 
-# def get_openId(request):
-#     return render(request, 'matching/get_openId.html')
+def get_openId(request):
+    return render(request, 'matching/get_openId.html')
 
 
 def get_openId_action(request):
@@ -279,11 +279,12 @@ def get_openId_action(request):
     return HttpResponse(r)
 
 
-# def get_user(request):  # 获取用户信息
-#     return render(request, 'matching/get_user.html')
+def get_user(request):  # 获取用户信息
+    return render(request, 'matching/get_user.html')
 
 
-def get_user_action(request, openId):
+def get_user_action(request):
+    openId = request.GET['openId']
     try:
         obj = User.objects.get(openId=openId)
     except User.DoesNotExist:
@@ -320,12 +321,12 @@ def get_user_action(request, openId):
     return HttpResponse(json.dumps(rett, ensure_ascii=False))
 
 
-# def get_diary(request):  # 获取日记内容
-#     return render(request, 'matching/get_diary.html')
+def get_diary(request):  # 获取日记内容
+    return render(request, 'matching/get_diary.html')
 
 
-def get_diary_action(request, diaryid):
-    # diaryid = request.POST['diaryId']
+def get_diary_action(request):
+    diaryid = request.GET['diaryId']
     try:
         obj = Diary.objects.get(id=diaryid)
     except Diary.DoesNotExist:
@@ -340,12 +341,12 @@ def get_diary_action(request, diaryid):
     return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
 
-# def get_user_diary(request):  # 找到用户的日记
-#     return render(request, 'matching/get_user_diary.html')
+def get_user_diary(request):  # 找到用户的日记
+    return render(request, 'matching/get_user_diary.html')
 
 
-def get_user_diary_action(request, userid):
-    # userid = request.POST['openId']
+def get_user_diary_action(request):
+    userid = request.GET['openId']
     try:
         obj = User.objects.get(openId=userid)
     except User.DoesNotExist:
