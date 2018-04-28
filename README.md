@@ -114,7 +114,7 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``GET``
 
-调用API:``localhost:端口号/matching/get_user_action/用户openId``
+调用API:``localhost:端口号/matching/get_user_action/用户openId``
 <!-- 
 访问``localhost:端口号/matching/get_user``,向``localhost:端口号/matching/get_user_action``发送表单 -->
 <!-- ```
