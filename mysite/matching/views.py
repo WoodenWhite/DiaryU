@@ -7,13 +7,14 @@ from django.shortcuts import get_object_or_404, render
 from django.utils.timezone import now, timedelta
 from .models import User, Diary, Pairing, Word
 from .utils import similityCos, pair
-from . import utils
+from . import utils, secret_data
 import requests
 import jieba
 import json
 import jieba.analyse as analyse
 # Create your views here.
 # coding = unicode
+
 
 
 def index(request):
@@ -227,8 +228,8 @@ def get_openId(request):
 def get_openId_action(request):
     # appid = request.POST['appid']
     # secret = request.POST['secret']
-    appid = ''
-    secret = ''
+    appid = secret_data.appid
+    secret = secret_data.secret
     js_code = request.POST['js_code']
     # grant_type = request.POST['grant_type']
     r = requests.get(
