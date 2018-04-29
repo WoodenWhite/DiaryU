@@ -271,3 +271,12 @@ Backend code of WeChat Mini Program DiaryU.
     }
 }
 ```
+## 聊天功能初步
+
+### 功能简介
+
+访问``localhost:端口号/matching/select_chat_room``,进入某个房间，在``localhost:端口号/matching/chat/房间号``进行聊天。处在同一个聊天室的人可以看到彼此发送的信息。
+
+关于建立websocket连接的格式详见目录``/mysite/matching/templates/chat``下的两个文件
+### 基本思路(部分实现)
+用户配对成功之后，后台会存储这个配对的编号，当用户发送聊天请求时，返回该用户的配对号，前端根据配对号发送请求拉取历史消息，然后建立websocket连接，发送消息（包括openId），如果用户同时在线，即可互相交流，不在线的话，后台服务器存储用户聊天的每一句话，待另一方选择匹配项时拉取聊天记录。

@@ -34,6 +34,7 @@ class Diary(models.Model):
 
 
 class Pairing(models.Model):
+    pair_name = models.CharField(max_length=10000, null=True)
     user_one = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='user1')  # 用户1的openId
     user_two = models.ForeignKey(
@@ -45,3 +46,18 @@ class Word(models.Model):
     emotionty = models.IntegerField(
         default=0, choices=[(x, str(x)) for x in range(0, 8)])
     strength = models.IntegerField(default=0)
+
+
+# class room(models.Model):
+    # room_name = models.CharField(max_length=10000)
+    # user_a = models.ForeignKey(
+    #     User, on_delete=models.CASCADE, related_name='user1')  # 用户1的openId
+    # user_b = models.ForeignKey(
+    #     User, on_delete=models.CASCADE, related_name='user2')  # 用户2的openId
+
+
+class message(models.Model):
+    pub_date = models.DateTimeField(auto_now_add=True)  # 发布日期第一次更新，其余时候不更新
+    content = models.CharField(max_length=10000)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE)

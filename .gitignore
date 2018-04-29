@@ -1,3 +1,4 @@
 .DS_Store
 */.DS_Store
 mysite/matching/secret_data.py
+.vscode/settings.json

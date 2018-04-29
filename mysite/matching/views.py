@@ -5,6 +5,7 @@ from django.db.models import Count, Min, Max, Sum
 from django.db import models
 from django.shortcuts import get_object_or_404, render
 from django.utils.timezone import now, timedelta
+from django.utils.safestring import mark_safe
 from .models import User, Diary, Pairing, Word
 from .utils import similityCos, pair
 from . import utils, secret_data
@@ -19,6 +20,16 @@ import jieba.analyse as analyse
 def index(request):
     return render(request, 'matching/index.html')
     # return HttpResponse("Test")
+
+
+def select_chat_room(request):
+    return render(request, 'chat/select_chat_room.html')
+
+
+def room(request, room_name):
+    return render(request, 'chat/room.html', {
+        'room_name_json': mark_safe(json.dumps(room_name))
+    })
 
 
 def emotion(request):
@@ -278,7 +289,7 @@ def get_openId_action(request):
     js_code = request.GET['js_code']
     # grant_type = request.POST['grant_type']
     r = requests.get(
-        'https://api.weixin.qq.com/sns/jscode2session?appid='+appid+'&secret='+secret+'&js_code='+js_code+'&grant_type=authorization_code')
+        'https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + secret + '&js_code=' + js_code + '&grant_type=authorization_code')
     result = r.json()
     now = {
         'data': result
