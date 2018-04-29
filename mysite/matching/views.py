@@ -6,7 +6,7 @@ from django.db import models
 from django.shortcuts import get_object_or_404, render
 from django.utils.timezone import now, timedelta
 from django.utils.safestring import mark_safe
-from .models import User, Diary, Pairing, Word
+from .models import User, Diary, Pairing, Word, Message
 from .utils import similityCos, pair
 from . import utils, secret_data
 import requests
@@ -30,6 +30,46 @@ def room(request, room_name):
     return render(request, 'chat/room.html', {
         'room_name_json': mark_safe(json.dumps(room_name))
     })
+
+
+def get_history(request):
+    return render(request, 'matching/get_history.html')
+
+
+def get_history_action(request):
+    # 由于存储时两个pair的pair_name相同，所以这里不存外键，只存一个名字，
+    pair_id = request.GET['pair_id']
+    messages = Message.objects.filter(room=pair_id)
+    dicret = {
+        'data': {
+            'messages': []
+        }
+    }
+    for message in messages:
+        now = {
+            'publish_date': str(message.pub_date)[0:19],
+            'content': str(message.content),
+            'openI': str(message.user.openId),
+        }
+        dicret['data']['messages'].append(now)
+    return HttpResponse(json.dumps(dicret, ensure_ascii=False))
+
+
+def get_pair(request):
+    return render(request, 'matching/get_pair.html')
+
+
+def get_pair_action(request):
+    openId = request.GET['openId']
+    user = User.objects.get(openId=openId)
+    obj = Pairing.objects.get(user_one=user)
+    pair_id = obj.pair_name
+    dicret = {
+        'data': {
+            'pair_id': str(pair_id)
+        }
+    }
+    return HttpResponse(json.dumps(dicret, ensure_ascii=False))
 
 
 def emotion(request):

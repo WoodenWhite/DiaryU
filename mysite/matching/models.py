@@ -56,7 +56,8 @@ class Word(models.Model):
     #     User, on_delete=models.CASCADE, related_name='user2')  # 用户2的openId
 
 
-class message(models.Model):
+class Message(models.Model):
+    room = models.CharField(max_length=10000, null=True)
     pub_date = models.DateTimeField(auto_now_add=True)  # 发布日期第一次更新，其余时候不更新
     content = models.CharField(max_length=10000)
     user = models.ForeignKey(

@@ -280,3 +280,44 @@ Backend code of WeChat Mini Program DiaryU.
 关于建立websocket连接的格式详见目录``/mysite/matching/templates/chat``下的两个文件
 ### 基本思路(部分实现)
 用户配对成功之后，后台会存储这个配对的编号，当用户发送聊天请求时，返回该用户的配对号，前端根据配对号发送请求拉取历史消息，然后建立websocket连接，发送消息（包括openId），如果用户同时在线，即可互相交流，不在线的话，后台服务器存储用户聊天的每一句话，待另一方选择匹配项时拉取聊天记录。
+
+### 获取用户房间号
+访问``localhost:端口号/matching/get_pair``，输入用户id，向``localhost:端口号/matching/get_pair_action``发送get请求，返回用户所在的房间id。返回json格式示例如下：
+```
+{
+    "data": {
+        "pair_id": "1"
+    }
+}
+```
+
+### 获取房间的聊天记录
+访问``localhost:端口号/matching/get_history`` ，输入房间号，向``localhost:端口号/matching/get_history_action`` 发送get请求，返回该房间的所有聊天记录，返回json格式示例如下：
+```
+{
+    "data": {
+        "messages": [
+            {
+                "publish_date": "2018-04-29 12:46:41",
+                "content": "123",
+                "openId": "小猪佩奇1",
+            }, 
+            {
+                "publish_date": "2018-04-29 12:46:56",
+                "content": "hello",
+                "openId": "小猪佩奇2",
+            }, 
+            {
+                "publish_date": "2018-04-29 12:46:59",
+                "content": "看得到嘛", 
+                "openId": "小猪佩奇2"
+            },
+            {
+                "publish_date": "2018-04-29 12:47:21",
+                "content": "完全ojkb",
+                "openId": "小猪佩奇1",
+            }
+        ]
+    }
+}
+```

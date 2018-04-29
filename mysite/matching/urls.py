@@ -25,4 +25,10 @@ urlpatterns = [
          views.get_openId_action, name='get_openId_action'),
     path('select_chat_room/', views.select_chat_room, name='select_char_room'),
     path('room/<room_name>/', views.room, name='room'),
+    path('get_pair/', views.get_pair, name='get_pair'),
+    path('get_pair_action/', views.get_pair_action, name='get_pair_action'),
+    path('get_history/', views.get_history, name='get_history'),
+    path('get_history_action/', views.get_history_action,
+         name='get_history_action'),
+
 ]

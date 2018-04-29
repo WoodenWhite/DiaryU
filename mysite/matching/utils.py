@@ -21,6 +21,13 @@ def pair(x, y):  # 两个用户均要存储成功
     obj.save()
     obj = Pairing(user_one=y, user_two=x)
     obj.save()
+    obj = Pairing.objects.get(user_one=x)
+    tmp_name = obj.id
+    obj.pair_name = str(tmp_name)
+    obj.save()
+    obj = Pairing.objects.get(user_one=y)
+    obj.pair_name = str(tmp_name)
+    obj.save()
 
 
 def depair(x):
