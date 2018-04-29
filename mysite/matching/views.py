@@ -85,13 +85,15 @@ def emotion(request):
                 'data': {
                     'emotion': str(emoret),
                     'match': {
-                        'openid': str(obj.openId),
-                        'nickName': str(obj.nickName),
-                        'avatarUrl': str(obj.avatarUrl),
-                        'gender': str(obj.gender),
-                        'province': str(obj.province),
-                        'city': str(obj.city),
-                        'country': str(obj.country),
+                        'user': {
+                            'openid': str(obj.openId),
+                            'nickName': str(obj.nickName),
+                            'avatarUrl': str(obj.avatarUrl),
+                            'gender': str(obj.gender),
+                            'province': str(obj.province),
+                            'city': str(obj.city),
+                            'country': str(obj.country),
+                        }
                     }
                 }
             }
@@ -186,13 +188,15 @@ def emotion(request):
             'data': {
                 'emotion': str(emoret),
                 'match': {
-                    'openid': str(obj.openId),
-                    'nickName': str(obj.nickName),
-                    'avatarUrl': str(obj.avatarUrl),
-                    'gender': str(obj.gender),
-                    'province': str(obj.province),
-                    'city': str(obj.city),
-                    'country': str(obj.country),
+                    'user': {
+                        'openid': str(obj.openId),
+                        'nickName': str(obj.nickName),
+                        'avatarUrl': str(obj.avatarUrl),
+                        'gender': str(obj.gender),
+                        'province': str(obj.province),
+                        'city': str(obj.city),
+                        'country': str(obj.country),
+                    }
                 }
             }
         }
@@ -275,8 +279,11 @@ def get_openId_action(request):
     # grant_type = request.POST['grant_type']
     r = requests.get(
         'https://api.weixin.qq.com/sns/jscode2session?appid='+appid+'&secret='+secret+'&js_code='+js_code+'&grant_type=authorization_code')
-    # result = json.loads(r)
-    return HttpResponse(r)
+    result = r.json()
+    now = {
+        'data': result
+    }
+    return HttpResponse(json.dumps(now, ensure_ascii=False))
 
 
 def get_user(request):  # 获取用户信息
@@ -298,6 +305,7 @@ def get_user_action(request):
     rett = {
         'data': {
             'user': {
+                'openid': str(obj.openId),
                 'nickName': str(obj.nickName),
                 'avatarUrl': str(obj.avatarUrl),
                 'gender': obj.gender,
@@ -332,11 +340,16 @@ def get_diary_action(request):
     except Diary.DoesNotExist:
         raise Http404("Diary does not exist")
     ret = {
-        'diary_id': str(obj.id),
-        'title': str(obj.title),
-        'content': str(obj.content),
-        'emotion': str(obj.emotion),
-        'publish_date': str(obj.pub_date)[0:10],
+        'data': {
+            'diary': {
+                'diary_id': str(obj.id),
+                'title': str(obj.title),
+                'content': str(obj.content),
+                'emotion': str(obj.emotion),
+                'publish_date': str(obj.pub_date)[0:10],
+            }
+
+        }
     }
     return HttpResponse(json.dumps(ret, ensure_ascii=False))
 
@@ -448,13 +461,15 @@ def alt_diary_action(request):
                 'data': {
                     'emotion': str(emoret),
                     'match': {
-                        'openid': str(obj.openId),
-                        'nickName': str(obj.nickName),
-                        'avatarUrl': str(obj.avatarUrl),
-                        'gender': str(obj.gender),
-                        'province': str(obj.province),
-                        'city': str(obj.city),
-                        'country': str(obj.country),
+                        'user': {
+                            'openid': str(obj.openId),
+                            'nickName': str(obj.nickName),
+                            'avatarUrl': str(obj.avatarUrl),
+                            'gender': str(obj.gender),
+                            'province': str(obj.province),
+                            'city': str(obj.city),
+                            'country': str(obj.country),
+                        }
                     }
                 }
             }
@@ -541,13 +556,15 @@ def alt_diary_action(request):
             'data': {
                 'emotion': str(emoret),
                 'match': {
-                    'openid': str(obj.openId),
-                    'nickName': str(obj.nickName),
-                    'avatarUrl': str(obj.avatarUrl),
-                    'gender': str(obj.gender),
-                    'province': str(obj.province),
-                    'city': str(obj.city),
-                    'country': str(obj.country),
+                    'user': {
+                        'openid': str(obj.openId),
+                        'nickName': str(obj.nickName),
+                        'avatarUrl': str(obj.avatarUrl),
+                        'gender': str(obj.gender),
+                        'province': str(obj.province),
+                        'city': str(obj.city),
+                        'country': str(obj.country),
+                    }
                 }
             }
         }
