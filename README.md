@@ -2,13 +2,19 @@
 Backend code of WeChat Mini Program DiaryU.
 
 ## 使用步骤：
-1. 需要安装的 Python 库：
+0. 需要安装的 Python 库：
     ```
     pip3 install django &&
     pip3 install jieba &&
     pip3 install requests &&
-    pip3 install django-cors-headers
+    pip3 install django-cors-headers &&
+    pip3 install channels
     ```
+    需要安装Redis，macOs下使用homebrew直接安装，Linux下在官网安装，网上教程很详细，安装完成后,macOs下使用命令:
+    ```
+    brew services start redis
+    ```
+    Linux下启动服务暂未测试，待添加，默认监听端口为6379，如出现错误请检查默认端口配置。
 1. 在 /path/to/DiaryU/mysite/matching/ 下新建 secret_data.py，内容如下：
     ```
     appid = 'your_appid'
@@ -115,13 +121,13 @@ Backend code of WeChat Mini Program DiaryU.
 ### 获取用户信息
 
 请求类型：``GET``
-
-调用API:``localhost:端口号/matching/get_user_action/用户openId``
 <!-- 
-访问``localhost:端口号/matching/get_user``,向``localhost:端口号/matching/get_user_action``发送表单 -->
-<!-- ```
+调用API:``localhost:端口号/matching/get_user_action/用户openId`` -->
+
+访问``localhost:端口号/matching/get_user``,向``localhost:端口号/matching/get_user_action``发送请求
+```
 <input type="text" name="openId" />
-``` -->
+```
 返回用户的详细信息和近期至多十篇文章的简略信息，返回json格式样例为：
 ```
 {
@@ -160,12 +166,12 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``GET``
 
-调用API:``localhost:端口号/matching/get_diary_action/日记Id``
-<!-- 
-访问``localhost:端口号/matching/get_diary``，向``localhost:端口号/matching/get_diary_action``发送表单 -->
-<!-- ```
+<!-- 调用API:``localhost:端口号/matching/get_diary_action/日记Id`` -->
+
+访问``localhost:端口号/matching/get_diary``，向``localhost:端口号/matching/get_diary_action``发送GET请求
+```
 <input type="text" name="diaryID" />
-``` -->
+```
 返回详细日记内容。返回json格式样例：
 ```
 {
@@ -185,11 +191,11 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``GET``
 
-调用API:``localhost:端口号/matching/get_user_diary_action/用户openId``
-<!-- 访问``localhost:端口号/matching/get_user_diary``,向``localhost:端口号/matching/get_diary_action``，发送表单 -->
-<!-- ```
+<!-- 调用API:``localhost:端口号/matching/get_user_diary_action/用户openId`` -->
+访问``localhost:端口号/matching/get_user_diary``,向``localhost:端口号/matching/get_diary_action``，发送GET请求
+```
 <input type="text" name="openId" />
-``` -->
+```
 返回对应用户的所有日记简略信息。返回json样式举例：
 ```
 {
@@ -248,11 +254,11 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``GET``
 
-调用API``localhost:端口号/matching/get_openId_action/用户js_code``
-<!-- 访问``localhost:端口号/matching/get_openId``,向``localhost:端口号/matching/get_openId_action``发送表单 -->
-<!-- ```
+<!-- 调用API``localhost:端口号/matching/get_openId_action/用户js_code`` -->
+访问``localhost:端口号/matching/get_openId``,向``localhost:端口号/matching/get_openId_action``发送GET请求
+```
 <input type="text" name="js_code" /> 
-``` -->
+```
 获取该用户的openID和session_key。返回json格式举例
 ```
 // 从微信 API 处获取成功
@@ -282,7 +288,12 @@ Backend code of WeChat Mini Program DiaryU.
 用户配对成功之后，后台会存储这个配对的编号，当用户发送聊天请求时，返回该用户的配对号，前端根据配对号发送请求拉取历史消息，然后建立websocket连接，发送消息（包括openId），如果用户同时在线，即可互相交流，不在线的话，后台服务器存储用户聊天的每一句话，待另一方选择匹配项时拉取聊天记录。
 
 ### 获取用户房间号
-访问``localhost:端口号/matching/get_pair``，输入用户id，向``localhost:端口号/matching/get_pair_action``发送get请求，返回用户所在的房间id。返回json格式示例如下：
+请求类型：``GET``
+访问``localhost:端口号/matching/get_pair``，输入用户id，向``localhost:端口号/matching/get_pair_action``发送GET请求:
+```
+    <input type="text" name="openId" />
+```
+返回用户所在的房间id。返回json格式示例如下：
 ```
 {
     "data": {
@@ -292,7 +303,14 @@ Backend code of WeChat Mini Program DiaryU.
 ```
 
 ### 获取房间的聊天记录
-访问``localhost:端口号/matching/get_history`` ，输入房间号，向``localhost:端口号/matching/get_history_action`` 发送get请求，返回该房间的所有聊天记录，返回json格式示例如下：
+
+请求类型：``GET``
+
+访问``localhost:端口号/matching/get_history`` ，输入房间号，向``localhost:端口号/matching/get_history_action`` 发送get请求:
+```
+    <input type="text" name="pair_id" />
+```
+返回该房间的所有聊天记录，返回json格式示例如下：
 ```
 {
     "data": {
