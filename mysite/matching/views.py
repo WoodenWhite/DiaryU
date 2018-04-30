@@ -378,7 +378,8 @@ def get_user_action(request):
             else:
                 break
     else:
-        user_two = Pairing.objects.get(user_one=obj)
+        pair = Pairing.objects.get(user_one=obj)
+        user_two = pair.user_two
         rett = {
             'data': {
                 'user': {
