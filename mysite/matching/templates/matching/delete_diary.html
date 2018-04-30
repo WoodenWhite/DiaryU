@@ -3,7 +3,7 @@
     <strong>{{ error_message }}</strong>
 </p>{% endif %}
 
-<form action="{% url 'delete_diary_action'%}" method="GET">
+<form action="{% url 'delete_diary_action'%}" method="POST">
     {% csrf_token %} diaryID :
     <br>
     <input type="text" name="diaryId" />

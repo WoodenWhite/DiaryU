@@ -281,9 +281,9 @@ Backend code of WeChat Mini Program DiaryU.
     }
 }
 ```
-### 修改日记
+### 删除日记
 
-请求类型：``GET``
+请求类型：``POST``
 
 访问``localhost:端口号/matching/delete_diary``,向``localhost:端口号/matching/delete_diary_action``发送表单，
 ```
