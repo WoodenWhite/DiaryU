@@ -153,7 +153,7 @@ def emotion(request):
             # str(obj.gender)+'",' + '"province": "'+str(obj.province) + \
             # '",' + '"city": "'+str(obj.city)+'",' + \
             # '"country": "'+str(obj.country)+'"}'
-            return HttpResponse(json.dumps(retdic), ensure_ascii=False)
+            return HttpResponse(json.dumps(retdic, ensure_ascii=False))
 
     enddate = now()
     startdate = enddate + timedelta(days=-2)  # 只取出近两天内发布的日记
