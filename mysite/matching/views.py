@@ -73,7 +73,7 @@ def get_pair_action(request):
 
 
 def emotion(request):
-    userid = request.POST['openId']
+    userid = request.POST['openid']
     cont = request.POST['diary']  # 获取openid和日记文本
     title = request.POST['title']
 
