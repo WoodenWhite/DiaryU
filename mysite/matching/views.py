@@ -87,7 +87,7 @@ def get_history_action(request):
         now = {
             'publish_date': str(message.pub_date)[0:19],
             'content': str(message.content),
-            'openI': str(message.user.openId),
+            'openId': str(message.user.openId),
         }
         dicret['data']['messages'].append(now)
     return HttpResponse(json.dumps(dicret, ensure_ascii=False))
