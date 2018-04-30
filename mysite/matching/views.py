@@ -283,7 +283,7 @@ def depair_action(request):  # 一方解除关系后，另一方需要接受提�
 
     if User.objects.filter(openId=userid, pair_status=True).count() == 0:
         ret = {
-            'status': 'failure'
+            'status': 'fail'
         }
     else:
         x = User.objects.get(openId=userid)
@@ -684,7 +684,7 @@ def delete_diary_action(request):
         }
     else:
         retdic = {
-            'status': 'failure',
+            'status': 'fail',
         }
 
     return HttpResponse(json.dumps(retdic, ensure_ascii=False))
