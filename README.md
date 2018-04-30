@@ -88,7 +88,7 @@ Backend code of WeChat Mini Program DiaryU.
 
 访问``localhost:端口号/matching/depair``, 向``localhost:端口号/matching/depair_action``提供表单
 ```
-<input type="text" name="userid" />
+<input type="text" name="openId" />
 ```
 解除该用户的匹配关系。返回json格式样例：
 ```
