@@ -213,7 +213,7 @@ Backend code of WeChat Mini Program DiaryU.
 
 访问``localhost:端口号/matching/get_diary``，向``localhost:端口号/matching/get_diary_action``发送GET请求
 ```
-<input type="text" name="diaryID" />
+<input type="text" name="diaryId" />
 ```
 返回详细日记内容。返回json格式样例：
 ```
@@ -290,6 +290,20 @@ Backend code of WeChat Mini Program DiaryU.
             }
         }
     }
+}
+```
+### 修改日记
+
+请求类型：``GET``
+
+访问``localhost:端口号/matching/delete_diary``,向``localhost:端口号/matching/delete_diary_action``发送表单，
+```
+<input type="text" name="diaryId" />
+```
+删除日记并返回删除结果。返回json格式举例
+```
+{
+    "status": "success",
 }
 ```
 

@@ -3,16 +3,10 @@
     <strong>{{ error_message }}</strong>
 </p>{% endif %}
 
-<form action="{% url 'emotion'%}" method="post">
-    {% csrf_token %}openID:
+<form action="{% url 'delete_diary_action'%}" method="GET">
+    {% csrf_token %} diaryID :
     <br>
-    <input type="text" name="openId" />
-    <br>Title :
-    <br>
-    <input type="text" name="title" />
-    <br>diary:
-    <br>
-    <textarea name="content" rows="10" cols="50"></textarea>
+    <input type="text" name="diaryId" />
     <br>
     <!-- <input type="text" name="" /> -->
     <!-- <input type="text" name="userid" /> -->
