@@ -130,6 +130,7 @@ Backend code of WeChat Mini Program DiaryU.
 ```
 返回用户的详细信息和近期至多十篇文章的简略信息，返回json格式样例为：
 ```
+// 有配对时
 {
     "data": {
         "user": {
@@ -168,6 +169,37 @@ Backend code of WeChat Mini Program DiaryU.
                 "country": "None"
             }
         }
+    }
+}
+
+// 无配对时
+{
+    "data": {
+        "user": {
+            "openid": "666",
+            "nickName": "None", 
+            "avatarUrl": "None", 
+            "gender": 0, 
+            "province": "None", 
+            "city": "None", 
+            "country": "None"
+        },
+        "diaries": [
+            {
+                "diary_id": "557",
+                "title": "Lorem ipsum dolor sit amet."
+                "content": "Lorem ipsum dolor sit amet.",
+                "emotion": "0", 
+                "publish_date": "2018-04-23"
+            },
+            {
+                "diary_id": "582",
+                "title": "真的烦", 
+                "content": "哇今天是真的烦",
+                "emotion": "6", 
+                "publish_date": "2018-04-24"
+            }
+        ]
     }
 }
 ```
