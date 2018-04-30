@@ -2,4 +2,4 @@
 */.DS_Store
 mysite/matching/secret_data.py
 .vscode/settings.json
-.mysite/db.sqlite3
+mysite/db.sqlite3
