@@ -48,11 +48,11 @@ Backend code of WeChat Mini Program DiaryU.
 
 访问``localhost:端口号/matching``，向``localhost:端口号/matching/emotion``提供表单
 ```
-<input type="text" name="openid" />
+<input type="text" name="openId" />
 <input type="text" name="title" />
 <textarea name="diary" rows="10" cols="50"></textarea>
 ```
-若用户已匹配，返回情感类型和匹配对象的openID，否则进行匹配，若匹配成功返回情感类型和新对象的相关信息，否则只返回情感类型。返回json格式样例：
+若用户已匹配，返回情感类型和匹配对象的openId，否则进行匹配，若匹配成功返回情感类型和新对象的相关信息，否则只返回情感类型。返回json格式样例：
 ```
 // 保存成功，同时匹配成功
 {
@@ -61,7 +61,7 @@ Backend code of WeChat Mini Program DiaryU.
         "emotion": "1",
         "match": {
             "user": {
-                "openid": "666",
+                "openId": "666",
                 "nickName": "None",
                 "avatarUrl": "None",
                 "gender": "0",
@@ -134,7 +134,7 @@ Backend code of WeChat Mini Program DiaryU.
 {
     "data": {
         "user": {
-            "openid": "666",
+            "openId": "666",
             "nickName": "None", 
             "avatarUrl": "None", 
             "gender": 0, 
@@ -160,7 +160,7 @@ Backend code of WeChat Mini Program DiaryU.
         ],
         "match": {
             "user": {
-                "openid": "666",
+                "openId": "666",
                 "nickName": "None",
                 "avatarUrl": "None",
                 "gender": "0",
@@ -176,7 +176,7 @@ Backend code of WeChat Mini Program DiaryU.
 {
     "data": {
         "user": {
-            "openid": "666",
+            "openId": "666",
             "nickName": "None", 
             "avatarUrl": "None", 
             "gender": 0, 
@@ -278,17 +278,6 @@ Backend code of WeChat Mini Program DiaryU.
     "status": "success",
     "data": {
         "emotion": "1",
-        "match": {
-            "user": {
-                "openid": "666",
-                "nickName": "None",
-                "avatarUrl": "None",
-                "gender": "0",
-                "province": "None",
-                "city": "None",
-                "country": "None"
-            }
-        }
     }
 }
 ```
@@ -316,12 +305,12 @@ Backend code of WeChat Mini Program DiaryU.
 ```
 <input type="text" name="js_code" /> 
 ```
-获取该用户的openID和session_key。返回json格式举例
+获取该用户的openId和session_key。返回json格式举例
 ```
 // 从微信 API 处获取成功
 {
     "data": {
-        "openid": "OPENID",
+        "openId": "openId",
         "session_key": "SESSIONKEY"
     }
 }
