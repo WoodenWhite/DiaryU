@@ -46,7 +46,7 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``POST``
 
-访问``localhost:端口号/matching``，向``localhost:端口号/matching/emotion``提供表单
+访问``localhost:端口号/matching``，向``localhost:端口号/matching/emotion/``提供表单
 ```
 <input type="text" name="openId" />
 <input type="text" name="title" />
@@ -86,7 +86,7 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``POST``
 
-访问``localhost:端口号/matching/depair``, 向``localhost:端口号/matching/depair_action``提供表单
+访问``localhost:端口号/matching/depair``, 向``localhost:端口号/matching/depair_action/``提供表单
 ```
 <input type="text" name="openId" />
 ```
@@ -101,7 +101,7 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``POST``
 
-访问``localhost:端口号/matching/store``, 向``localhost:端口号/matching/store_action``提供表单，存储用户信息。表单内容为    
+访问``localhost:端口号/matching/store``, 向``localhost:端口号/matching/store_action/``提供表单，存储用户信息。表单内容为    
 ```
 <input type="text" name="openId" />
 <input type="text" name="nickName" />
@@ -124,7 +124,7 @@ Backend code of WeChat Mini Program DiaryU.
 <!-- 
 调用API:``localhost:端口号/matching/get_user_action/用户openId`` -->
 
-访问``localhost:端口号/matching/get_user``,向``localhost:端口号/matching/get_user_action``发送请求
+访问``localhost:端口号/matching/get_user``,向``localhost:端口号/matching/get_user_action/``发送请求
 ```
 <input type="text" name="openId" />
 ```
@@ -211,7 +211,7 @@ Backend code of WeChat Mini Program DiaryU.
 
 <!-- 调用API:``localhost:端口号/matching/get_diary_action/日记Id`` -->
 
-访问``localhost:端口号/matching/get_diary``，向``localhost:端口号/matching/get_diary_action``发送GET请求
+访问``localhost:端口号/matching/get_diary``，向``localhost:端口号/matching/get_diary_action/``发送GET请求
 ```
 <input type="text" name="diaryId" />
 ```
@@ -235,7 +235,7 @@ Backend code of WeChat Mini Program DiaryU.
 请求类型：``GET``
 
 <!-- 调用API:``localhost:端口号/matching/get_user_diary_action/用户openId`` -->
-访问``localhost:端口号/matching/get_user_diary``,向``localhost:端口号/matching/get_diary_action``，发送GET请求
+访问``localhost:端口号/matching/get_user_diary``,向``localhost:端口号/matching/get_diary_action/``，发送GET请求
 ```
 <input type="text" name="openId" />
 ```
@@ -266,7 +266,7 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``POST``
 
-访问``localhost:端口号/matching/alt_diary``,向``localhost:端口号/matching/alt_diary_action``发送表单，
+访问``localhost:端口号/matching/alt_diary``,向``localhost:端口号/matching/alt_diary_action/``发送表单，
 ```
 <input type="text" name="diaryId" />
 <input type="text" name="title" />
@@ -285,7 +285,7 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``POST``
 
-访问``localhost:端口号/matching/delete_diary``,向``localhost:端口号/matching/delete_diary_action``发送表单，
+访问``localhost:端口号/matching/delete_diary``,向``localhost:端口号/matching/delete_diary_action/``发送表单，
 ```
 <input type="text" name="diaryId" />
 ```
@@ -301,7 +301,7 @@ Backend code of WeChat Mini Program DiaryU.
 请求类型：``GET``
 
 <!-- 调用API``localhost:端口号/matching/get_openId_action/用户js_code`` -->
-访问``localhost:端口号/matching/get_openId``,向``localhost:端口号/matching/get_openId_action``发送GET请求
+访问``localhost:端口号/matching/get_openId``,向``localhost:端口号/matching/get_openId_action/``发送GET请求
 ```
 <input type="text" name="js_code" /> 
 ```
@@ -330,7 +330,7 @@ Backend code of WeChat Mini Program DiaryU.
 请求类型：``POST``
 
 <!-- 调用API``localhost:端口号/matching/get_openId_action/用户js_code`` -->
-访问``localhost:端口号/matching/upload_img``,向``localhost:端口号/matching/upload_img_action``发送POST请求
+访问``localhost:端口号/matching/upload_img``,向``localhost:端口号/matching/upload_img_action/``发送POST请求
 ```
 <form action="{% url 'uploadImg_action'%}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
@@ -351,7 +351,7 @@ Backend code of WeChat Mini Program DiaryU.
 请求类型：``GET``
 
 <!-- 调用API``localhost:端口号/matching/get_openId_action/用户js_code`` -->
-访问``localhost:端口号/matching/show_img``,向``localhost:端口号/matching/show_img_action``发送GET请求,图片名字(包括拓展名)
+访问``localhost:端口号/matching/show_img``,向``localhost:端口号/matching/show_img_action/``发送GET请求,图片名字(包括拓展名)
 ```
     <input type="text" name="img_name">
 ```
@@ -371,7 +371,7 @@ Backend code of WeChat Mini Program DiaryU.
 
 ### 功能简介
 
-访问``localhost:端口号/matching/select_chat_room``,进入某个房间，在``localhost:端口号/matching/chat/房间号``进行聊天。处在同一个聊天室的人可以看到彼此发送的信息。
+访问``localhost:端口号/matching/select_chat_room``,进入某个房间，在``localhost:端口号/matching/chat/房间号/``进行聊天。处在同一个聊天室的人可以看到彼此发送的信息。
 
 关于建立websocket连接的格式详见目录``/mysite/matching/templates/chat``下的两个文件
 ### 基本思路(部分实现)
@@ -379,7 +379,7 @@ Backend code of WeChat Mini Program DiaryU.
 
 ### 获取用户房间号
 请求类型：``GET``
-访问``localhost:端口号/matching/get_pair``，输入用户id，向``localhost:端口号/matching/get_pair_action``发送GET请求:
+访问``localhost:端口号/matching/get_pair``，输入用户id，向``localhost:端口号/matching/get_pair_action/``发送GET请求:
 ```
     <input type="text" name="openId" />
 ```
@@ -396,7 +396,7 @@ Backend code of WeChat Mini Program DiaryU.
 
 请求类型：``GET``
 
-访问``localhost:端口号/matching/get_history`` ，输入房间号，向``localhost:端口号/matching/get_history_action`` 发送get请求:
+访问``localhost:端口号/matching/get_history`` ，输入房间号，向``localhost:端口号/matching/get_history_action/`` 发送get请求:
 ```
     <input type="text" name="pair_id" />
 ```
@@ -427,5 +427,23 @@ Backend code of WeChat Mini Program DiaryU.
             }
         ]
     }
+}
+```
+
+### 使用 HTTP 请求发送消息
+
+请求类型：``POST``
+
+<!-- 调用API``localhost:端口号/matching/get_openId_action/用户js_code`` -->
+向``localhost:端口号/matching/send_message_via_http/``发送POST请求
+```
+<input type="text" name="pair_id">
+<input type="text" name="openId">
+<input type="text" name="content">
+```
+返回是否发送成功。返回json格式举例
+```
+{
+    "status": 'success'
 }
 ```

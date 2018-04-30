@@ -727,3 +727,11 @@ def delete_diary_action(request):
         }
 
     return HttpResponse(json.dumps(retdic, ensure_ascii=False))
+
+def send_message_via_http(request):
+    Message(
+        room = request.POST['pair_id'], 
+        content = request.POST['content'], 
+        user = User.objects.get(openId = request.POST['openId'])
+    ).save()
+    return HttpResponse('{"status": "success"}')
