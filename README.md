@@ -50,7 +50,7 @@ Backend code of WeChat Mini Program DiaryU.
 ```
 <input type="text" name="openId" />
 <input type="text" name="title" />
-<textarea name="diary" rows="10" cols="50"></textarea>
+<textarea name="content" rows="10" cols="50"></textarea>
 ```
 若用户已匹配，返回情感类型和匹配对象的openId，否则进行匹配，若匹配成功返回情感类型和新对象的相关信息，否则只返回情感类型。返回json格式样例：
 ```
