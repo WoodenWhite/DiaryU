@@ -126,6 +126,10 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace(
+    '\\', '/')  # 设置静态文件路径为主目录下的media文件夹
+MEDIA_URL = '/media/'
+
 # Cross Region Whitelist
 # https://github.com/ottoyiu/django-cors-headers/
 

@@ -62,3 +62,8 @@ class Message(models.Model):
     content = models.CharField(max_length=10000)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE)
+
+
+class Image(models.Model):
+    img = models.ImageField(upload_to='')
+    name = models.CharField(max_length=100)

@@ -323,6 +323,50 @@ Backend code of WeChat Mini Program DiaryU.
     }
 }
 ```
+
+
+### 上传图片
+
+请求类型：``POST``
+
+<!-- 调用API``localhost:端口号/matching/get_openId_action/用户js_code`` -->
+访问``localhost:端口号/matching/upload_img``,向``localhost:端口号/matching/upload_img_action``发送POST请求
+```
+<form action="{% url 'uploadImg_action'%}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="img">
+    <input type="text" name="img_name">
+    <button type="submit">上传</button>
+</form>
+```
+返回是否保存成功。返回json格式举例
+```
+{
+    "status": 'success'
+}
+```
+
+### 上传图片
+
+请求类型：``GET``
+
+<!-- 调用API``localhost:端口号/matching/get_openId_action/用户js_code`` -->
+访问``localhost:端口号/matching/show_img``,向``localhost:端口号/matching/show_img_action``发送GET请求,图片名字(包括拓展名)
+```
+    <input type="text" name="img_name">
+```
+返回图片数据。返回json格式举例
+```
+{
+    "data": {
+        "image": {
+            "name": "Screen_Shot_2018-04-17_at_11.03.57_AM.png",
+            "photourl": "https://2life.zerychao.com/upload/WechatIMG87.jpeg/"
+        }
+    }
+}
+```
+
 ## 聊天功能初步
 
 ### 功能简介

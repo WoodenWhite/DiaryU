@@ -33,5 +33,9 @@ urlpatterns = [
     path('delete_diary/', views.delete_diary, name='delete_diary'),
     path('delete_diary_action/', views.delete_diary_action,
          name='delete_diary_action'),
+    path('upload_img/', views.uploadImg, name='uploadImg'),
+    path('upload_img_action/', views.uploadImg_action, name='uploadImg_action'),
+    path('show_img/', views.showImg, name='showImg'),
+    path('show_img_action/', views.showImg_action, name='showImg_action'),
 
 ]

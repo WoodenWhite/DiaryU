@@ -1,0 +1,13 @@
+{% if error_message %}
+<p>
+    <strong>{{ error_message }}</strong>
+</p>{% endif %}
+
+<form action="{% url 'showImg_action'%}" method="GET" enctype="multipart/form-data">
+    {% csrf_token %}
+    <!-- <input type="file" name="img"> -->
+    <br> img_name:
+    <br>
+    <input type="text" name="img_name">
+    <button type="submit">提交</button>
+</form>

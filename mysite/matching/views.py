@@ -6,7 +6,7 @@ from django.db import models
 from django.shortcuts import get_object_or_404, render
 from django.utils.timezone import now, timedelta
 from django.utils.safestring import mark_safe
-from .models import User, Diary, Pairing, Word, Message
+from .models import User, Diary, Pairing, Word, Message, Image
 from .utils import similityCos, pair
 from . import utils, secret_data
 import requests
@@ -20,6 +20,44 @@ import jieba.analyse as analyse
 def index(request):
     return render(request, 'matching/index.html')
     # return HttpResponse("Test")
+
+
+def uploadImg(request):
+    return render(request, 'image/uploadimg.html')
+
+
+def uploadImg_action(request):
+    # if request.method == 'POST':
+    new_img = Image(
+        img=request.FILES.get('img'),
+        name=request.FILES.get('img').name
+    )
+    new_img.save()
+    return HttpResponse('{\'status\':\'success\'}')
+
+
+def showImg(request):
+    return render(request, 'image/showimg.html')
+
+
+def showImg_action(request):
+    # imgs = IMG.objects.all()
+    # content = {
+    #     'imgs': imgs,
+    # }
+    # for i in imgs:
+    #     print(i.img.url)
+    name = request.GET['img_name']
+    # Image.objects.get(img_name=request.GET['img_name']).name
+    ret = {
+        'data': {
+            'image': {
+                'name': str(request.GET['img_name']),
+                'photourl': 'https://2life.zerychao.com/upload/'+name+'/',
+            }
+        }
+    }
+    return HttpResponse(json.dumps(ret, ensure_ascii=True))
 
 
 def select_chat_room(request):

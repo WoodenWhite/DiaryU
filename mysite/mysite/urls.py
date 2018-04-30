@@ -15,8 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-
+from django.conf.urls.static import static
+from . import settings
 urlpatterns = [
     path('matching/', include('matching.urls')),
     path('admin/', admin.site.urls),
+
 ]
+
+urlpatterns += static('/upload/',
+                      document_root=settings.MEDIA_ROOT)  # 加上这一行
