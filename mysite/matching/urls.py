@@ -30,5 +30,8 @@ urlpatterns = [
     path('get_history/', views.get_history, name='get_history'),
     path('get_history_action/', views.get_history_action,
          name='get_history_action'),
+    path('delete_diary/', views.delete_diary, name='delete_diary'),
+    path('delete_diary_action/', views.delete_diary_action,
+         name='delete_diary_action'),
 
 ]

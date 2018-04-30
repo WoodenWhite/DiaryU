@@ -677,8 +677,8 @@ def delete_diary(request):
 
 def delete_diary_action(request):
     diaryId = request.POST['diaryId']
-    if Diary.objects.filter(diaryId=diaryId) != 0:
-        Diary.objects.filter(diaryId=diaryId).delete()
+    if Diary.objects.filter(id=diaryId) != 0:
+        Diary.objects.filter(id=diaryId).delete()
         retdic = {
             'status': 'success',
         }
