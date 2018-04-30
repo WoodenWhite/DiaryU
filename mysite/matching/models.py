@@ -4,14 +4,14 @@ from django.db import models
 
 
 class User(models.Model):
-    openId = models.CharField(max_length=100)  # 微信用户openId
-    nickName = models.CharField(max_length=100, null=True)
+    openId = models.CharField(max_length=1000)  # 微信用户openId
+    nickName = models.CharField(max_length=1000, null=True)
     gender = models.IntegerField(
         default=0, choices=[(x, str(x)) for x in range(0, 3)], null=True)  # 用户性别
-    city = models.CharField(max_length=100, null=True)
-    province = models.CharField(max_length=100, null=True)
-    country = models.CharField(max_length=100, null=True)
-    avatarUrl = models.CharField(max_length=100, null=True)
+    city = models.CharField(max_length=1000, null=True)
+    province = models.CharField(max_length=1000, null=True)
+    country = models.CharField(max_length=1000, null=True)
+    avatarUrl = models.CharField(max_length=1000, null=True)
     pair_status = models.BooleanField(default=False)  # 连接状态，判断当前用户是否有匹配对象
 
 
